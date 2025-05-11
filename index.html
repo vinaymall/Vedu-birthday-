@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>??????? ?? ??????????</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    #greeting {
+      position: absolute;
+      top: 5vh;
+      width: 100%;
+      font-size: 6vw;
+      font-weight: bold;
+      color: gold;
+      text-shadow: 2px 2px 10px red, 2px 2px 20px orange;
+      z-index: 10;
+    }
+
+    #photo-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+
+    #photo {
+      width: 70vw;
+      max-width: 300px;
+      border: 5px solid white;
+      border-radius: 12px;
+    }
+
+    #message {
+      position: absolute;
+      top: calc(50% + 180px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      font-size: 5.5vw;
+      font-weight: bold;
+      color: #ffea00;
+      text-shadow: 2px 2px 10px #ff6600;
+      z-index: 10;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    @media (max-width: 500px) {
+      #message {
+        top: calc(50% + 160px);
+        font-size: 6vw;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="canvas"></canvas>
+
+  <div id="greeting">??????? ?? ??????????!</div>
+
+  <div id="photo-container">
+    <img id="photo" src="birthday-photo.jpg" alt="Birthday Photo" />
+  </div>
+
+  <div id="message">?????? ?? ????? ???????? ?? ???? ?? ??? ???? ??????????!</div>
+
+  <!-- Background Music Auto Play -->
+  <audio id="bgmusic" autoplay loop>
+    <source src="birthday-music.mp3" type="audio/mpeg" />
+    ???? ???????? ????? ???? ???? ?? ?????
+  </audio>
+
+  <script>
+    // iOS autoplay fix ¡ª triggers music if blocked
+    window.addEventListener('click', () => {
+      const music = document.getElementById('bgmusic');
+      if (music.paused) music.play();
+    });
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const fireworks = [];
+    const particles = [];
+
+    class Firework {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height;
+        this.targetY = Math.random() * canvas.height / 2;
+        this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        this.radius = 2;
+        this.velocity = -5 - Math.random() * 3;
+      }
+
+      update() {
+        this.y += this.velocity;
+        if (this.y <= this.targetY) {
+          for (let i = 0; i < 60; i++) {
+            particles.push(new Particle(this.x, this.y, this.color));
+          }
+          return false;
+        }
+        return true;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+    }
+
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = Math.random() * 2 + 1;
+        this.speed = Math.random() * 4 + 1;
+        this.angle = Math.random() * Math.PI * 2;
+        this.gravity = 0.05;
+        this.alpha = 1;
+      }
+
+      update() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed + this.gravity;
+        this.alpha -= 0.01;
+        return this.alpha > 0;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function animate() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (Math.random() < 0.1) {
+        fireworks.push(new Firework());
+      }
+
+      for (let i = fireworks.length - 1; i >= 0; i--) {
+        if (!fireworks[i].update()) {
+          fireworks.splice(i, 1);
+        } else {
+          fireworks[i].draw();
+        }
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        if (!particles[i].update()) {
+          particles.splice(i, 1);
+        } else {
+          particles[i].draw();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+
+  <!-- Advertisement Code at Bottom -->
+  <div style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 9999;">
+    <script type="text/javascript">
+      atOptions = {
+        'key': '96ed96cd07607bc83befe839fb6ee69e',
+        'format': 'iframe',
+        'height': 60,
+        'width': 468,
+        'params': {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/96ed96cd07607bc83befe839fb6ee69e/invoke.js"></script>
+  </div>
+
+</body>
+</html>
